@@ -2,7 +2,8 @@ package com.fridge.core.database.entity
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import java.util.Date
+import java.time.Instant
+import java.time.LocalDate
 
 
 @Entity(tableName = "FridgeItemEntity")
@@ -11,8 +12,8 @@ data class FridgeItemEntity(
     val name: String,
     val note: String? = null,
 
-    val expiredDate: Date,
-    val timeStored: Date,
+    val expiredDate: LocalDate,
+    val timeStored: Instant,
 
     val isOpen: Boolean,
     val category: String
