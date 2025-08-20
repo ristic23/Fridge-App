@@ -5,7 +5,9 @@ import androidx.room.Room
 import com.fridge.core.database.FridgeDatabase
 import com.fridge.core.database.dao.FridgeItemDao
 import com.fridge.core.database.sources.RoomAllItemsSourceImpl
+import com.fridge.core.database.sources.RoomDetailItemSourceImpl
 import com.fridge.features.allItems.domain.LocaleAllItemsSource
+import com.fridge.features.detailsItem.domain.LocaleDetailItemSource
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -33,5 +35,10 @@ object DatabaseModule {
     fun provideAllItemsSource(
         fridgeItemDao: FridgeItemDao
     ): LocaleAllItemsSource = RoomAllItemsSourceImpl(fridgeItemDao)
+
+    @Provides
+    fun provideDetailItemSource(
+        fridgeItemDao: FridgeItemDao
+    ): LocaleDetailItemSource = RoomDetailItemSourceImpl(fridgeItemDao)
 
 }

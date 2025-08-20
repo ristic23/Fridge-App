@@ -45,7 +45,7 @@ fun ItemFridge(
             .padding(horizontal = 8.dp, vertical = 4.dp)
             .clickable { onItemClick() }
             .background(
-                color = MaterialTheme.colorScheme.surface,
+                color = MaterialTheme.colorScheme.primaryContainer,
                 shape = RoundedCornerShape(12.dp),
             ),
     ) {
@@ -72,7 +72,7 @@ fun ItemFridge(
                         ),
                     text = name,
                     style = MaterialTheme.typography.titleLarge,
-                    color = MaterialTheme.colorScheme.onSurface
+                    color = MaterialTheme.colorScheme.onPrimaryContainer
                 )
 
                 if (isOpened) {
@@ -99,7 +99,7 @@ fun ItemFridge(
                         .padding(top = 8.dp),
                     text = it,
                     style = MaterialTheme.typography.titleSmall,
-                    color = MaterialTheme.colorScheme.onSurface
+                    color = MaterialTheme.colorScheme.onPrimaryContainer
                 )
             }
 
@@ -113,14 +113,14 @@ fun ItemFridge(
                         .weight(1f),
                     iconPainter = painterResource(id = R.drawable.ic_time_stored),
                     text = timeStored,
-                    iconTint = MaterialTheme.colorScheme.onSurface
+                    iconTint = MaterialTheme.colorScheme.onPrimaryContainer
                 )
                 IconWithText(
                     modifier = Modifier
                         .weight(1f),
                     iconPainter = painterResource(id = R.drawable.ic_expire_date),
                     text = expiredDate,
-                    iconTint = MaterialTheme.colorScheme.onSurface
+                    iconTint = MaterialTheme.colorScheme.onPrimaryContainer
                 )
             }
         }
@@ -134,7 +134,7 @@ fun IconWithText(
     iconTint: Color = Color.Unspecified,
     iconModifier: Modifier = Modifier,
     text: String,
-    textColor: Color = MaterialTheme.colorScheme.onSurface,
+    textColor: Color = MaterialTheme.colorScheme.onPrimaryContainer,
     textStyle: TextStyle = MaterialTheme.typography.titleSmall,
     horizontalArrangement: Arrangement.Horizontal = Arrangement.Start,
     verticalAlignment: Alignment.Vertical = Alignment.CenterVertically,

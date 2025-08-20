@@ -1,4 +1,12 @@
 <resources>
     <string name="app_name">Fridge App</string>
     <string name="opened">Opened</string>
+    <string name="closed">Closed</string>
+    <string name="isOpened">Is opened</string>
+    <string name="fridgeItemDetails">Details</string>
+    <string name="note">Note</string>
+    <string name="expiredDate">Expired date</string>
+    <string name="timeOfStorage">Stored Date</string>
+    <string name="cetegory">Category</string>
+    <string name="packageState">Package</string>
 </resources>

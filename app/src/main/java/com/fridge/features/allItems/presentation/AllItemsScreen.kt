@@ -1,5 +1,6 @@
 package com.fridge.features.allItems.presentation
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -53,6 +54,7 @@ fun AllItemsScreen(
     Box(
         modifier = Modifier
             .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background)
     ) {
         LazyColumn(
             modifier = Modifier
