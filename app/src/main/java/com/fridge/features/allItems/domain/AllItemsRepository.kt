@@ -1,0 +1,8 @@
+package com.fridge.features.allItems.domain
+
+import com.fridge.core.domain.FridgeItem
+import kotlinx.coroutines.flow.Flow
+
+interface AllItemsRepository {
+    fun getAllItems():  Flow<List<FridgeItem>>
+}
