@@ -7,6 +7,13 @@
     <string name="note">Note</string>
     <string name="expiredDate">Expired date</string>
     <string name="timeOfStorage">Stored Date</string>
-    <string name="cetegory">Category</string>
+    <string name="category">Category</string>
     <string name="packageState">Package</string>
+    <string name="create">Create</string>
+    <string name="edit">Edit</string>
+    <string name="name">Name</string>
+    <string name="nameHint">Input name of the product</string>
+    <string name="noteHint">Input details about the product</string>
+    <string name="categoryHint">Input product category</string>
+    <string name="isProductOpened">Check if product is open</string>
 </resources>

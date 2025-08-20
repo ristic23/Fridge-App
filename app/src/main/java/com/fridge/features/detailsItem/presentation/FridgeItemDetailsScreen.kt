@@ -37,6 +37,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.fridge.R
 import com.fridge.core.data.getDayMonthYear
 import com.fridge.core.data.getDayMonthYearHourMinutes
+import com.fridge.core.designComponents.SectionItem
 import com.fridge.features.detailsItem.presentation.FridgeItemScreenStates.Loading
 import com.fridge.features.detailsItem.presentation.FridgeItemScreenStates.Error
 import com.fridge.features.detailsItem.presentation.FridgeItemScreenStates.Empty
@@ -206,7 +207,7 @@ fun FridgeItemDetailsScreen(
                     SectionItem(
                         modifier = Modifier
                             .fillMaxWidth(),
-                        sectionTitle = stringResource(R.string.cetegory),
+                        sectionTitle = stringResource(R.string.category),
                         icon = painterResource(R.drawable.ic_category),
                         text = item.category
                     )
@@ -215,51 +216,6 @@ fun FridgeItemDetailsScreen(
         }
     }
 }
-
-@Composable
-fun SectionItem(
-    modifier: Modifier = Modifier,
-    sectionTitle: String,
-    icon: Painter,
-    iconBackgroundColor: Color = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.4f),
-    iconTint: Color = MaterialTheme.colorScheme.onPrimaryContainer,
-    text: String,
-) {
-    Column(modifier = modifier.padding(vertical = 8.dp)) {
-        Text(
-            text = sectionTitle,
-            style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
-            color = MaterialTheme.colorScheme.onBackground
-        )
-
-        Spacer(modifier = Modifier.height(4.dp))
-
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Box(
-                modifier = Modifier
-                    .size(40.dp)
-                    .clip(RoundedCornerShape(8.dp))
-                    .background(iconBackgroundColor),
-                contentAlignment = Alignment.Center
-            ) {
-                Icon(
-                    painter = icon,
-                    contentDescription = sectionTitle,
-                    tint = iconTint
-                )
-            }
-
-            Spacer(modifier = Modifier.width(12.dp))
-
-            Text(
-                text = text,
-                style = MaterialTheme.typography.bodyLarge,
-                color = MaterialTheme.colorScheme.onBackground
-            )
-        }
-    }
-}
-
 
 @Preview
 @Composable
