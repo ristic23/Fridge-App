@@ -47,6 +47,7 @@ import com.fridge.ui.theme.FridgeAppTheme
 @Composable
 fun FridgeItemDetailsWrapper(
     viewModel: FridgeItemDetailsViewModel = hiltViewModel(),
+    id: Int,
     onBack: () -> Unit,
     onEditClick: () -> Unit,
 ) {

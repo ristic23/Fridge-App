@@ -45,6 +45,11 @@ import com.fridge.core.domain.FridgeItem
 import com.fridge.ui.theme.FridgeAppTheme
 import java.time.Instant
 
+//Trebam da povezem Compose sa VM states, da kreiam Actions za svako polje,
+//Dodam Date i Time Picker-e
+//Povezem ih sa repository, ako je edit da se ucita profil
+//U zavisnosti edit/create da se uradi cuvanje u bazi
+
 @Composable
 fun AddItemWrapper(
     viewModel: AddItemViewModel = hiltViewModel(),

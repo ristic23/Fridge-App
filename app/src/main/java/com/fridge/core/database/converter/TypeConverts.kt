@@ -5,9 +5,10 @@ import androidx.room.TypeConverter
 import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
+import javax.inject.Inject
 
 @ProvidedTypeConverter
-class TypeConverts {
+class TypeConverts @Inject constructor() {
 
     @TypeConverter
     fun fromEpochToLocalDate(value: Long?): LocalDate? =

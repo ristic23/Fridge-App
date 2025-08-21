@@ -3,6 +3,7 @@ package com.fridge.core.database.di
 import android.content.Context
 import androidx.room.Room
 import com.fridge.core.database.FridgeDatabase
+import com.fridge.core.database.converter.TypeConverts
 import com.fridge.core.database.dao.FridgeItemDao
 import com.fridge.core.database.sources.RoomAllItemsSourceImpl
 import com.fridge.core.database.sources.RoomDetailItemSourceImpl
@@ -21,12 +22,17 @@ object DatabaseModule {
 
     @Provides
     @Singleton
-    fun provideDatabase(@ApplicationContext context: Context): FridgeDatabase =
+    fun provideDatabase(
+        @ApplicationContext context: Context,
+        typeConverts: TypeConverts
+    ): FridgeDatabase =
         Room.databaseBuilder(
             context,
             FridgeDatabase::class.java,
             "FridgeDatabase"
-        ).build()
+        )
+            .addTypeConverter(typeConverts)
+            .build()
 
     @Provides
     fun provideFoodDao(db: FridgeDatabase): FridgeItemDao = db.fridgeItemDao
