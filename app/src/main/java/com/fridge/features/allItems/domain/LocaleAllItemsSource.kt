@@ -5,4 +5,6 @@ import kotlinx.coroutines.flow.Flow
 
 interface LocaleAllItemsSource {
     fun getAllItems():  Flow<List<FridgeItem>>
+
+    suspend fun insertItem(item: FridgeItem)
 }

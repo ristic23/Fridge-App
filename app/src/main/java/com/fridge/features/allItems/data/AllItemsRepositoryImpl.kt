@@ -25,4 +25,8 @@ class AllItemsRepositoryImpl @Inject constructor(
         return localeAllItemsSource.getAllItems()
     }
 
+    override suspend fun insertItem(item: FridgeItem) {
+        localeAllItemsSource.insertItem(item)
+    }
+
 }

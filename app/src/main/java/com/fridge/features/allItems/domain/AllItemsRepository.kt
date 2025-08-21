@@ -5,4 +5,6 @@ import kotlinx.coroutines.flow.Flow
 
 interface AllItemsRepository {
     fun getAllItems():  Flow<List<FridgeItem>>
+
+    suspend fun insertItem(item: FridgeItem)
 }

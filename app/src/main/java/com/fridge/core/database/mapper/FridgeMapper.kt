@@ -9,13 +9,23 @@ fun List<FridgeItemEntity>.toFridgeItems() =
     }
 
 fun FridgeItemEntity?.toFridgeItem(): FridgeItem? = this?.let {
-        FridgeItem(
-            id = id,
-            name = name,
-            note = note,
-            expiredDate = expiredDate,
-            timeStored = timeStored,
-            isOpen = isOpen,
-            category = category,
-        )
-    }
+    FridgeItem(
+        id = id,
+        name = name,
+        note = note,
+        expiredDate = expiredDate,
+        timeStored = timeStored,
+        isOpen = isOpen,
+        category = category,
+    )
+}
+
+fun FridgeItem.toFridgeEntity(): FridgeItemEntity =
+    FridgeItemEntity(
+        name = name,
+        note = note,
+        expiredDate = expiredDate,
+        timeStored = timeStored,
+        isOpen = isOpen,
+        category = category,
+    )
