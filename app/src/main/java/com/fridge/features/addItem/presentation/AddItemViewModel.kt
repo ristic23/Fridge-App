@@ -12,6 +12,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.time.LocalDate
 import javax.inject.Inject
 import kotlin.coroutines.cancellation.CancellationException
 
@@ -53,6 +54,7 @@ class AddItemViewModel @Inject constructor(
     fun saveItem(
         saveFinished: () -> Unit,
     ) {
+        if (fridgeItemNotFiled()) return
         viewModelScope.launch(Dispatchers.IO) {
             if (editItem.value.id == -1) {
                 addItemRepository.insertItem(editItem.value)
@@ -60,6 +62,14 @@ class AddItemViewModel @Inject constructor(
                 addItemRepository.updateItem(editItem.value)
             }
             saveFinished()
+        }
+    }
+
+    private fun fridgeItemNotFiled(): Boolean {
+        return editItem.value.let { item ->
+            item.name.isBlank() ||
+                    item.category.isBlank() ||
+                    item.expiredDate == LocalDate.MAX
         }
     }
 

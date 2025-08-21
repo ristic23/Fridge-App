@@ -27,6 +27,7 @@ fun SectionItem(
     modifier: Modifier = Modifier,
     sectionTitle: String,
     icon: Painter,
+    isError: Boolean = false,
     iconBackgroundColor: Color = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.4f),
     iconTint: Color = MaterialTheme.colorScheme.onPrimaryContainer,
     text: String,
@@ -35,7 +36,10 @@ fun SectionItem(
         Text(
             text = sectionTitle,
             style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
-            color = MaterialTheme.colorScheme.onBackground
+            color = if (isError)
+                MaterialTheme.colorScheme.error
+            else
+                iconTint
         )
 
         Spacer(modifier = Modifier.height(4.dp))
@@ -51,7 +55,10 @@ fun SectionItem(
                 Icon(
                     painter = icon,
                     contentDescription = sectionTitle,
-                    tint = iconTint
+                    tint = if (isError)
+                        MaterialTheme.colorScheme.error
+                    else
+                        iconTint
                 )
             }
 
@@ -60,7 +67,10 @@ fun SectionItem(
             Text(
                 text = text,
                 style = MaterialTheme.typography.bodyLarge,
-                color = MaterialTheme.colorScheme.onBackground
+                color = if (isError)
+                    MaterialTheme.colorScheme.error
+                else
+                    MaterialTheme.colorScheme.onBackground
             )
         }
     }

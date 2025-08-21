@@ -47,7 +47,6 @@ import com.fridge.R
 import com.fridge.core.data.getDayMonthYear
 import com.fridge.core.data.getDayMonthYearHourMinutes
 import com.fridge.core.data.toMillis
-import com.fridge.core.designComponents.BottomSheetWithTwoOptions
 import com.fridge.core.designComponents.MyDatePickerDialog
 import com.fridge.core.designComponents.SectionItem
 import com.fridge.core.designComponents.TextCheckBox
@@ -110,7 +109,11 @@ fun AddItemScreen(
         mutableStateOf(false)
     }
     var pickedTime by rememberSaveable {
-        mutableStateOf(Pair(0,0))
+        mutableStateOf(Pair(0, 0))
+    }
+
+    var isSaveFailed by rememberSaveable {
+        mutableStateOf(false)
     }
 
     fun dismissCorrectDatePicker() {
@@ -164,6 +167,7 @@ fun AddItemScreen(
                     .size(32.dp)
                     .align(Alignment.CenterEnd)
                     .clickable {
+                        isSaveFailed = true
                         onSaveClick()
                     },
                 painter = painterResource(R.drawable.ic_save),
@@ -185,6 +189,7 @@ fun AddItemScreen(
                 sectionTitle = stringResource(R.string.name),
                 icon = painterResource(R.drawable.ic_fridge),
                 singleLine = true,
+                isError = isSaveFailed && item.name.isBlank(),
                 text = item.name,
                 hint = stringResource(R.string.nameHint),
                 onValueChanged = {
@@ -226,6 +231,7 @@ fun AddItemScreen(
                     .clickable {
                         showExpiredDatePicker = true
                     },
+                isError = isSaveFailed && item.expiredDate == LocalDate.MAX,
                 sectionTitle = stringResource(R.string.expiredDate),
                 icon = painterResource(R.drawable.ic_expire_date),
                 text = item.expiredDate.getDayMonthYear()
@@ -239,6 +245,7 @@ fun AddItemScreen(
                 icon = painterResource(R.drawable.ic_category),
                 singleLine = true,
                 text = item.category,
+                isError = isSaveFailed && item.category.isBlank(),
                 hint = stringResource(R.string.categoryHint),
                 onValueChanged = {
                     onAction(EditItemActions.Category(category = it))
@@ -318,11 +325,11 @@ fun InputSectionItem(
     icon: Painter,
     maxLines: Int = 1,
     singleLine: Boolean,
+    isError: Boolean = false,
     iconTint: Color = MaterialTheme.colorScheme.onPrimaryContainer,
     text: String?,
     hint: String,
     onValueChanged: (String) -> Unit,
-
     ) {
     Column(modifier = modifier.padding(vertical = 8.dp)) {
         Text(
@@ -347,6 +354,7 @@ fun InputSectionItem(
                 focusedBorderColor = MaterialTheme.colorScheme.onBackground,
                 unfocusedBorderColor = MaterialTheme.colorScheme.onPrimaryContainer,
             ),
+            isError = isError,
             singleLine = singleLine,
             maxLines = maxLines,
             value = text ?: "",
@@ -359,7 +367,10 @@ fun InputSectionItem(
                         .size(24.dp),
                     painter = icon,
                     contentDescription = sectionTitle,
-                    tint = iconTint
+                    tint = if (isError)
+                        MaterialTheme.colorScheme.error
+                    else
+                        iconTint
                 )
             },
             placeholder = {
