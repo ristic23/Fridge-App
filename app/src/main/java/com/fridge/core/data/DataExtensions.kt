@@ -7,7 +7,7 @@ import java.time.format.DateTimeFormatter
 
 fun LocalDate.getDayMonthYear(): String {
     return if (this == LocalDate.MAX) {
-        ""
+        "N/A"
     } else {
         this.format(DateTimeFormatter.ofPattern("dd.MM.yyyy."))
     }

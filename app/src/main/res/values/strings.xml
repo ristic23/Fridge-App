@@ -26,4 +26,6 @@
     <string name="expiredSort">Expired</string>
     <string name="nameSort">Name</string>
     <string name="storedSort">Stored</string>
+    <string name="asc">ASC</string>
+    <string name="dsc">DSC</string>
 </resources>

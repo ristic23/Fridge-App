@@ -332,12 +332,15 @@ fun InputSectionItem(
     text: String?,
     hint: String,
     onValueChanged: (String) -> Unit,
-    ) {
+) {
     Column(modifier = modifier.padding(vertical = 8.dp)) {
         Text(
             text = sectionTitle,
             style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
-            color = MaterialTheme.colorScheme.onBackground
+            color = if (isError)
+                MaterialTheme.colorScheme.error
+            else
+                MaterialTheme.colorScheme.onPrimaryContainer
         )
 
         Spacer(modifier = Modifier.height(4.dp))
@@ -355,6 +358,8 @@ fun InputSectionItem(
                 cursorColor = MaterialTheme.colorScheme.onBackground,
                 focusedBorderColor = MaterialTheme.colorScheme.onBackground,
                 unfocusedBorderColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                focusedTextColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                unfocusedTextColor = MaterialTheme.colorScheme.onPrimaryContainer,
             ),
             isError = isError,
             singleLine = singleLine,
@@ -378,7 +383,8 @@ fun InputSectionItem(
             placeholder = {
                 Text(
                     text = hint,
-                    style = MaterialTheme.typography.bodySmall
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onPrimaryContainer
                 )
             },
             textStyle = MaterialTheme.typography.bodyLarge,

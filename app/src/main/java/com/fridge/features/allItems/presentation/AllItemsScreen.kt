@@ -127,6 +127,8 @@ fun AllItemsScreen(
                     cursorColor = MaterialTheme.colorScheme.onBackground,
                     focusedBorderColor = MaterialTheme.colorScheme.onBackground,
                     unfocusedBorderColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                    focusedTextColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                    unfocusedTextColor = MaterialTheme.colorScheme.onPrimaryContainer,
                 ),
                 singleLine = true,
                 maxLines = 1,
@@ -165,7 +167,8 @@ fun AllItemsScreen(
                 placeholder = {
                     Text(
                         text = stringResource(R.string.searchHint),
-                        style = MaterialTheme.typography.bodySmall
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onPrimaryContainer
                     )
                 },
                 textStyle = MaterialTheme.typography.bodyLarge,
@@ -251,21 +254,14 @@ fun AllItemsScreen(
                             },
                         contentAlignment = Alignment.Center
                     ) {
-                        Icon(
-                            modifier = Modifier
-                                .size(28.dp)
-                                .then(
-                                    when (sortOrder) {
-                                        SortOrder.Ascending -> Modifier
-                                            .scale(scaleX = -1f, scaleY = 1f)
-
-                                        SortOrder.Descending -> Modifier
-                                            .rotate(180f)
-                                    }
-                                ),
-                            painter = painterResource(R.drawable.ic_sort),
-                            contentDescription = "Sort",
-                            tint = MaterialTheme.colorScheme.onPrimaryContainer,
+                        Text(
+                            text = stringResource(
+                                when (sortOrder) {
+                                    SortOrder.Ascending -> R.string.asc
+                                    SortOrder.Descending -> R.string.dsc
+                                }
+                            ),
+                            color = MaterialTheme.colorScheme.onPrimaryContainer
                         )
                     }
                 }
