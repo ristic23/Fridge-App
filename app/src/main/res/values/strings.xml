@@ -21,4 +21,9 @@
     <string name="areYouSure">Are you sure? This action is permenent.</string>
     <string name="cancel">Cancel</string>
     <string name="delete">Delete</string>
+    <string name="searchHint">Find product</string>
+    <string name="isExpired">Expired</string>
+    <string name="expiredSort">Expired</string>
+    <string name="nameSort">Name</string>
+    <string name="storedSort">Stored</string>
 </resources>

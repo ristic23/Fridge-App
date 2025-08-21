@@ -38,14 +38,18 @@ fun ItemFridge(
     timeStored: String,
     expiredDate: String,
     isOpened: Boolean,
+    isExpired: Boolean,
     onItemClick: () -> Unit,
 ) {
     Box(
         modifier = modifier
-            .padding(horizontal = 8.dp, vertical = 4.dp)
+            .padding(vertical = 4.dp)
             .clickable { onItemClick() }
             .background(
-                color = MaterialTheme.colorScheme.primaryContainer,
+                color = if (isExpired)
+                    MaterialTheme.colorScheme.onSurface
+                else
+                    MaterialTheme.colorScheme.primaryContainer,
                 shape = RoundedCornerShape(12.dp),
             ),
     ) {
@@ -198,6 +202,7 @@ private fun ItemFridgePreview() {
                 timeStored = "12.12.2025.",
                 expiredDate = "28.12.2025.",
                 isOpened = true,
+                isExpired = false,
                 onItemClick = {},
             )
             ItemFridge(
@@ -209,6 +214,7 @@ private fun ItemFridgePreview() {
                 timeStored = "12.12.2025.",
                 expiredDate = "28.12.2025.",
                 isOpened = false,
+                isExpired = false,
                 onItemClick = {},
             )
             ItemFridge(
@@ -219,6 +225,7 @@ private fun ItemFridgePreview() {
                 timeStored = "12.12.2025.",
                 expiredDate = "28.12.2025.",
                 isOpened = true,
+                isExpired = false,
                 onItemClick = {},
             )
             ItemFridge(
@@ -229,6 +236,7 @@ private fun ItemFridgePreview() {
                 timeStored = "12.12.2025.",
                 expiredDate = "28.12.2025.",
                 isOpened = false,
+                isExpired = true,
                 onItemClick = {},
             )
 

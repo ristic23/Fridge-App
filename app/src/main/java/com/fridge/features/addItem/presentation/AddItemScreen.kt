@@ -217,7 +217,9 @@ fun AddItemScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .clickable {
-                        showTimePicker = true
+                        if (item.id == -1) {
+                            showTimePicker = true
+                        }
                     },
                 sectionTitle = stringResource(R.string.timeOfStorage),
                 icon = painterResource(R.drawable.ic_time_stored),
@@ -366,7 +368,7 @@ fun InputSectionItem(
                     modifier = Modifier
                         .size(24.dp),
                     painter = icon,
-                    contentDescription = sectionTitle,
+                    contentDescription = "Section Icon",
                     tint = if (isError)
                         MaterialTheme.colorScheme.error
                     else
