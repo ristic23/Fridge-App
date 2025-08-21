@@ -16,4 +16,9 @@
     <string name="noteHint">Input details about the product</string>
     <string name="categoryHint">Input product category</string>
     <string name="isProductOpened">Check if product is open</string>
+    <string name="dismiss">Dismiss</string>
+    <string name="ok">OK</string>
+    <string name="areYouSure">Are you sure? This action is permenent.</string>
+    <string name="cancel">Cancel</string>
+    <string name="delete">Delete</string>
 </resources>

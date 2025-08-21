@@ -39,6 +39,17 @@ class AllItemsViewModel @Inject constructor(
                         timeStored = Instant.now(),
                     )
                 )
+                allItemsRepository.insertItem(
+                    FridgeItem(
+                        id = 2,
+                        name = "Meat",
+                        category = "Protein",
+                        isOpen = false,
+                        note = "Grass fed beef.",
+                        expiredDate = LocalDate.now().plusDays(7),
+                        timeStored = Instant.now(),
+                    )
+                )
                 cache.saveBoolean("isFirstUse", false)
             }
         }

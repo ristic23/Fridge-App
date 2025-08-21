@@ -9,6 +9,7 @@ import com.fridge.features.detailsItem.presentation.FridgeItemScreenStates.Error
 import com.fridge.features.detailsItem.presentation.FridgeItemScreenStates.Empty
 import com.fridge.features.detailsItem.presentation.FridgeItemScreenStates.Success
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -36,6 +37,17 @@ class FridgeItemDetailsViewModel @Inject constructor(
                 Log.e("DetailItemVM", "Failed to fetch item", e)
                 _screenState.value = Error(e.message ?: "Unknown error")
             }
+        }
+    }
+
+    fun deleteItem(
+        deletingFinished: () -> Unit,
+    ) {
+        viewModelScope.launch(Dispatchers.IO) {
+            if (screenState.value is Success) {
+                detailItemRepository.deleteItem(item = (screenState.value as Success).item)
+            }
+            deletingFinished()
         }
     }
 

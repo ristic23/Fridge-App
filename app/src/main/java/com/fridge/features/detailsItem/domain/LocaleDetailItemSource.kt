@@ -7,4 +7,6 @@ interface LocaleDetailItemSource {
 
     suspend fun getItemById(id: Int): FridgeItem?
 
+    suspend fun deleteItem(item: FridgeItem)
+
 }

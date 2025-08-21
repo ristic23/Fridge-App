@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalMaterial3Api::class)
+
 package com.fridge.features.addItem.presentation
 
 import androidx.compose.foundation.background
@@ -15,13 +17,18 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -39,16 +46,20 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.fridge.R
 import com.fridge.core.data.getDayMonthYear
 import com.fridge.core.data.getDayMonthYearHourMinutes
+import com.fridge.core.data.toMillis
+import com.fridge.core.designComponents.BottomSheetWithTwoOptions
+import com.fridge.core.designComponents.MyDatePickerDialog
 import com.fridge.core.designComponents.SectionItem
 import com.fridge.core.designComponents.TextCheckBox
+import com.fridge.core.designComponents.TimePickerDialog
 import com.fridge.core.domain.FridgeItem
 import com.fridge.ui.theme.FridgeAppTheme
 import java.time.Instant
-
-//Trebam da povezem Compose sa VM states, da kreiam Actions za svako polje,
-//Dodam Date i Time Picker-e
-//Povezem ih sa repository, ako je edit da se ucita profil
-//U zavisnosti edit/create da se uradi cuvanje u bazi
+import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.LocalTime
+import java.time.ZoneId
+import java.time.ZonedDateTime
 
 @Composable
 fun AddItemWrapper(
@@ -58,13 +69,23 @@ fun AddItemWrapper(
 ) {
     val editItem by viewModel.editItem.collectAsStateWithLifecycle()
 
+    LaunchedEffect(Unit) {
+        id?.let {
+            viewModel.fetchFridgeItem(it)
+        }
+    }
 
     AddItemScreen(
         item = editItem,
         isEditMode = id != null,
         onCancel = onCancel,
+        onAction = viewModel::onAction,
         onSaveClick = {
-
+            viewModel.saveItem(
+                saveFinished = {
+                    onCancel()
+                }
+            )
         }
     )
 
@@ -72,11 +93,34 @@ fun AddItemWrapper(
 
 @Composable
 fun AddItemScreen(
-    item: FridgeItem?,
+    item: FridgeItem,
     isEditMode: Boolean,
+    onAction: (EditItemActions) -> Unit,
     onCancel: () -> Unit,
     onSaveClick: () -> Unit,
 ) {
+    var showStoredDatePicker by rememberSaveable {
+        mutableStateOf(false)
+    }
+    var showExpiredDatePicker by rememberSaveable {
+        mutableStateOf(false)
+    }
+
+    var showTimePicker by rememberSaveable {
+        mutableStateOf(false)
+    }
+    var pickedTime by rememberSaveable {
+        mutableStateOf(Pair(0,0))
+    }
+
+    fun dismissCorrectDatePicker() {
+        if (showStoredDatePicker) {
+            showStoredDatePicker = false
+        } else {
+            showExpiredDatePicker = false
+        }
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -105,11 +149,11 @@ fun AddItemScreen(
                     .align(Alignment.Center),
                 text = stringResource(
                     id =
-                    if (isEditMode) {
-                        R.string.edit
-                    } else {
-                        R.string.create
-                    }
+                        if (isEditMode) {
+                            R.string.edit
+                        } else {
+                            R.string.create
+                        }
                 ),
                 textAlign = TextAlign.Center,
                 style = MaterialTheme.typography.headlineSmall,
@@ -141,10 +185,10 @@ fun AddItemScreen(
                 sectionTitle = stringResource(R.string.name),
                 icon = painterResource(R.drawable.ic_fridge),
                 singleLine = true,
-                text = item?.name,
+                text = item.name,
                 hint = stringResource(R.string.nameHint),
                 onValueChanged = {
-                    // todo lambda action with types and new values
+                    onAction(EditItemActions.Name(name = it))
                 }
             )
 
@@ -154,11 +198,12 @@ fun AddItemScreen(
                     .fillMaxWidth(),
                 sectionTitle = stringResource(R.string.note),
                 icon = painterResource(R.drawable.ic_note),
-                singleLine = true,
-                text = item?.note,
+                singleLine = false,
+                maxLines = 5,
+                text = item.note,
                 hint = stringResource(R.string.noteHint),
                 onValueChanged = {
-                    // todo lambda action with types and new values
+                    onAction(EditItemActions.Note(note = it))
                 }
             )
 
@@ -167,11 +212,11 @@ fun AddItemScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .clickable {
-                        // todo lambda action show time and date picker
+                        showTimePicker = true
                     },
                 sectionTitle = stringResource(R.string.timeOfStorage),
                 icon = painterResource(R.drawable.ic_time_stored),
-                text = (item?.timeStored ?: Instant.now()).getDayMonthYearHourMinutes()
+                text = item.timeStored.getDayMonthYearHourMinutes()
             )
 
             Spacer(modifier = Modifier.height(8.dp))
@@ -179,11 +224,11 @@ fun AddItemScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .clickable {
-                        // todo lambda action show date picker
+                        showExpiredDatePicker = true
                     },
                 sectionTitle = stringResource(R.string.expiredDate),
                 icon = painterResource(R.drawable.ic_expire_date),
-                text = item?.expiredDate?.getDayMonthYear() ?: ""
+                text = item.expiredDate.getDayMonthYear()
             )
 
             Spacer(modifier = Modifier.height(8.dp))
@@ -193,10 +238,10 @@ fun AddItemScreen(
                 sectionTitle = stringResource(R.string.category),
                 icon = painterResource(R.drawable.ic_category),
                 singleLine = true,
-                text = item?.category,
+                text = item.category,
                 hint = stringResource(R.string.categoryHint),
                 onValueChanged = {
-                    // todo lambda action with types and new values
+                    onAction(EditItemActions.Category(category = it))
                 }
             )
 
@@ -205,16 +250,65 @@ fun AddItemScreen(
                 modifier = Modifier
                     .fillMaxWidth(),
                 text = stringResource(R.string.isProductOpened),
-                checked = item?.isOpen == true,
+                checked = item.isOpen,
                 onCheckedChange = {
-                    // todo lambda action with types and new values
+                    onAction(EditItemActions.IsOpen(isOpen = it))
                 }
             )
 
             Spacer(modifier = Modifier.height(8.dp))
         }
-
     }
+
+    when {
+        showStoredDatePicker || showExpiredDatePicker -> {
+            MyDatePickerDialog(
+                currentDate = if (showStoredDatePicker) {
+                    item.timeStored.atZone(ZoneId.systemDefault()).toLocalDate()
+                } else {
+                    item.expiredDate
+                },
+                selectable = {
+                    if (showStoredDatePicker) {
+                        it <= LocalDate.now().plusDays(1).toMillis()
+                    } else {
+                        true
+                    }
+                },
+                onDateSelected = {
+                    if (showStoredDatePicker) {
+                        val newTime = LocalDateTime.of(
+                            it,
+                            LocalTime.of(pickedTime.first, pickedTime.second)
+                        )
+                        val newZone = ZonedDateTime.of(newTime, ZoneId.systemDefault())
+                        onAction(EditItemActions.TimeStored(newZone.toInstant()))
+                    } else {
+                        onAction(EditItemActions.ExpiredDate(expiredDate = it))
+                    }
+                    dismissCorrectDatePicker()
+                },
+                onDismiss = {
+                    dismissCorrectDatePicker()
+                }
+            )
+        }
+
+        showTimePicker -> {
+            TimePickerDialog(
+                currentTime = item.timeStored,
+                onConfirm = {
+                    pickedTime = Pair(it.hour, it.minute)
+                    showTimePicker = false
+                    showStoredDatePicker = true
+                },
+                onDismiss = {
+                    showTimePicker = false
+                },
+            )
+        }
+    }
+
 }
 
 @Composable
@@ -222,13 +316,14 @@ fun InputSectionItem(
     modifier: Modifier = Modifier,
     sectionTitle: String,
     icon: Painter,
+    maxLines: Int = 1,
     singleLine: Boolean,
     iconTint: Color = MaterialTheme.colorScheme.onPrimaryContainer,
     text: String?,
     hint: String,
     onValueChanged: (String) -> Unit,
 
-) {
+    ) {
     Column(modifier = modifier.padding(vertical = 8.dp)) {
         Text(
             text = sectionTitle,
@@ -253,6 +348,7 @@ fun InputSectionItem(
                 unfocusedBorderColor = MaterialTheme.colorScheme.onPrimaryContainer,
             ),
             singleLine = singleLine,
+            maxLines = maxLines,
             value = text ?: "",
             onValueChange = {
                 onValueChanged(it)
@@ -285,20 +381,20 @@ fun InputSectionItem(
 @Composable
 private fun AddItemScreenPreview() {
     FridgeAppTheme {
-        val item = null
-//        FridgeItem(
-//                id = 1,
-//                name = "",
-//                category = "Protein",
-//                isOpen = false,
-//                note = "These eggs are sourced from free-range hens that are fed a 100% organic diet.",
-//                expiredDate = LocalDate.now().plusDays(5),
-//                timeStored = Instant.now(),
-//            )
+        val item = FridgeItem(
+            id = 1,
+            name = "",
+            category = "Protein",
+            isOpen = false,
+            note = "These eggs are sourced from free-range hens that are fed a 100% organic diet.",
+            expiredDate = LocalDate.now().plusDays(5),
+            timeStored = Instant.now(),
+        )
         AddItemScreen(
             item = item,
-            isEditMode = item != null,
+            isEditMode = false,
             onCancel = {},
+            onAction = {},
             onSaveClick = {},
         )
     }

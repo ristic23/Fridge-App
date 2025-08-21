@@ -19,6 +19,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -31,6 +34,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.fridge.R
 import com.fridge.core.data.getDayMonthYear
 import com.fridge.core.data.getDayMonthYearHourMinutes
+import com.fridge.core.designComponents.BottomSheetWithTwoOptions
 import com.fridge.core.designComponents.SectionItem
 import com.fridge.core.domain.FridgeItem
 import com.fridge.features.detailsItem.presentation.FridgeItemScreenStates.Empty
@@ -59,7 +63,9 @@ fun FridgeItemDetailsWrapper(
         onBack = onBack,
         onEditClick = onEditClick,
         onDeleteClick =  {
-
+            viewModel.deleteItem {
+                onBack()
+            }
         }
     )
 
@@ -72,6 +78,10 @@ fun FridgeItemDetailsScreen(
     onEditClick: () -> Unit,
     onDeleteClick: () -> Unit,
 ) {
+    var showDeleteDialog by rememberSaveable {
+        mutableStateOf(false)
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -120,7 +130,7 @@ fun FridgeItemDetailsScreen(
                     .size(32.dp)
                     .align(Alignment.CenterEnd)
                     .clickable {
-                        onDeleteClick()
+                        showDeleteDialog = true
                     },
                 painter = painterResource(R.drawable.ic_delete_forever),
                 contentDescription = "Delete",
@@ -214,6 +224,20 @@ fun FridgeItemDetailsScreen(
                     )
                 }
             }
+        }
+    }
+
+    when {
+        showDeleteDialog -> {
+            BottomSheetWithTwoOptions(
+                onConfirm = {
+                    showDeleteDialog = false
+                    onDeleteClick()
+                },
+                onDismiss = {
+                    showDeleteDialog = false
+                }
+            )
         }
     }
 }

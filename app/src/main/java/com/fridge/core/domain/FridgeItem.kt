@@ -4,11 +4,11 @@ import java.time.Instant
 import java.time.LocalDate
 
 data class FridgeItem(
-    val id: Int,
-    val name: String,
+    val id: Int = -1,
+    val name: String = "",
     val note: String? = null,
-    val expiredDate: LocalDate,
-    val timeStored: Instant,
-    val isOpen: Boolean,
-    val category: String,
+    val expiredDate: LocalDate = LocalDate.MAX,
+    val timeStored: Instant = Instant.now(),
+    val isOpen: Boolean = false,
+    val category: String = ""
 )

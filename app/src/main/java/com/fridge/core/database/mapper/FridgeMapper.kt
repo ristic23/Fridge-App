@@ -22,6 +22,7 @@ fun FridgeItemEntity?.toFridgeItem(): FridgeItem? = this?.let {
 
 fun FridgeItem.toFridgeEntity(): FridgeItemEntity =
     FridgeItemEntity(
+        id = if (id > 0) id else 0,
         name = name,
         note = note,
         expiredDate = expiredDate,

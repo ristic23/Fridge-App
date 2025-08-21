@@ -2,9 +2,12 @@ package com.fridge.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
 import androidx.navigation3.runtime.NavEntry
 import androidx.navigation3.runtime.rememberNavBackStack
+import androidx.navigation3.runtime.rememberSavedStateNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
+import androidx.navigation3.ui.rememberSceneSetupNavEntryDecorator
 import com.fridge.features.addItem.presentation.AddItemWrapper
 import com.fridge.features.allItems.presentation.AllItemsWrapper
 import com.fridge.features.detailsItem.presentation.FridgeItemDetailsWrapper
@@ -13,10 +16,17 @@ import com.fridge.features.detailsItem.presentation.FridgeItemDetailsWrapper
 fun NavigationRoot(modifier: Modifier = Modifier) {
 
     val backStack = rememberNavBackStack(AllItemsScreen)
+    val goBack: () -> Unit = { if (backStack.size > 1) backStack.removeLastOrNull() }
 
     NavDisplay(
         modifier = modifier,
+        entryDecorators = listOf(
+            rememberSceneSetupNavEntryDecorator(),
+            rememberSavedStateNavEntryDecorator(),
+            rememberViewModelStoreNavEntryDecorator()
+        ),
         backStack = backStack,
+        onBack = { steps -> repeat(steps) { goBack() } },
         entryProvider = { key ->
             when (key) {
                 is AllItemsScreen -> {
@@ -36,7 +46,7 @@ fun NavigationRoot(modifier: Modifier = Modifier) {
                     ) {
                         FridgeItemDetailsWrapper(
                             id = key.id,
-                            onBack = { backStack.removeLastOrNull() },
+                            onBack = goBack,
                             onEditClick = { backStack.add(EditOrCreateItemScreen(key.id)) },
                         )
                     }
@@ -48,7 +58,7 @@ fun NavigationRoot(modifier: Modifier = Modifier) {
                     ) {
                         AddItemWrapper(
                             id = key.id,
-                            onCancel = { backStack.removeLastOrNull() },
+                            onCancel = goBack,
                         )
                     }
                 }

@@ -14,4 +14,8 @@ class DetailItemRepositoryImpl @Inject constructor(
         return localeDetailItemSource.getItemById(id)
     }
 
+    override suspend fun deleteItem(item: FridgeItem) {
+        localeDetailItemSource.deleteItem(item)
+    }
+
 }
