@@ -36,6 +36,7 @@ import com.fridge.core.data.getDayMonthYear
 import com.fridge.core.data.getDayMonthYearHourMinutes
 import com.fridge.core.designComponents.BottomSheetWithTwoOptions
 import com.fridge.core.designComponents.SectionItem
+import com.fridge.core.domain.Category
 import com.fridge.core.domain.FridgeItem
 import com.fridge.features.detailsItem.presentation.FridgeItemScreenStates.Empty
 import com.fridge.features.detailsItem.presentation.FridgeItemScreenStates.Error
@@ -220,7 +221,7 @@ fun FridgeItemDetailsScreen(
                             .fillMaxWidth(),
                         sectionTitle = stringResource(R.string.category),
                         icon = painterResource(R.drawable.ic_category),
-                        text = item.category
+                        text = item.category.displayName
                     )
                 }
             }
@@ -251,7 +252,7 @@ private fun FridgeItemDetailsScreenPreview() {
                 item = FridgeItem(
                     id = 1,
                     name = "Eggs",
-                    category = "Protein",
+                    category = Category.FOOD,
                     isOpen = false,
                     note = "These eggs are sourced from free-range hens that are fed a 100% organic diet.",
                     expiredDate = LocalDate.now().plusDays(5),

@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.fridge.core.data.Cache
 import com.fridge.core.data.isItemExpired
+import com.fridge.core.domain.Category
 import com.fridge.core.domain.FridgeItem
 import com.fridge.features.allItems.domain.AllItemsRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -63,7 +64,7 @@ class AllItemsViewModel @Inject constructor(
                     FridgeItem(
                         id = 1,
                         name = "Milk",
-                        category = "Diary",
+                        category = Category.DAIRY,
                         isOpen = false,
                         note = "Moja kravica, 2.8% masti, kupljeno na 30% akciji u lokalnoj mlekari.",
                         expiredDate = LocalDate.now().plusDays(5),
@@ -74,7 +75,7 @@ class AllItemsViewModel @Inject constructor(
                     FridgeItem(
                         id = 2,
                         name = "Beef Meat",
-                        category = "Protein",
+                        category = Category.MEAT,
                         isOpen = false,
                         note = "Grass fed beef.",
                         expiredDate = LocalDate.now().plusDays(7),

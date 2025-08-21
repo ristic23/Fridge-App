@@ -22,11 +22,16 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -47,12 +52,16 @@ import com.fridge.R
 import com.fridge.core.data.getDayMonthYear
 import com.fridge.core.data.getDayMonthYearHourMinutes
 import com.fridge.core.data.toMillis
+import com.fridge.core.designComponents.CategorySelectionDialog
 import com.fridge.core.designComponents.MyDatePickerDialog
 import com.fridge.core.designComponents.SectionItem
 import com.fridge.core.designComponents.TextCheckBox
 import com.fridge.core.designComponents.TimePickerDialog
+import com.fridge.core.domain.Category
 import com.fridge.core.domain.FridgeItem
+import com.fridge.navigation.NavigationRoot
 import com.fridge.ui.theme.FridgeAppTheme
+import kotlinx.coroutines.launch
 import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -98,6 +107,9 @@ fun AddItemScreen(
     onCancel: () -> Unit,
     onSaveClick: () -> Unit,
 ) {
+    val scope = rememberCoroutineScope()
+    val snackBarHostState = remember { SnackbarHostState() }
+
     var showStoredDatePicker by rememberSaveable {
         mutableStateOf(false)
     }
@@ -116,6 +128,10 @@ fun AddItemScreen(
         mutableStateOf(false)
     }
 
+    var showCategorySelectionDialog by rememberSaveable {
+        mutableStateOf(false)
+    }
+
     fun dismissCorrectDatePicker() {
         if (showStoredDatePicker) {
             showStoredDatePicker = false
@@ -124,200 +140,228 @@ fun AddItemScreen(
         }
     }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background)
-    ) {
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(MaterialTheme.colorScheme.primaryContainer)
-                .padding(horizontal = 8.dp, vertical = 4.dp),
-            contentAlignment = Alignment.Center,
-        ) {
-            Icon(
-                modifier = Modifier
-                    .size(32.dp)
-                    .align(Alignment.CenterStart)
-                    .clickable {
-                        onCancel()
-                    },
-                painter = painterResource(R.drawable.ic_close),
-                contentDescription = "Close",
-                tint = MaterialTheme.colorScheme.onPrimaryContainer,
-            )
-            Text(
-                modifier = Modifier
-                    .align(Alignment.Center),
-                text = stringResource(
-                    id =
-                        if (isEditMode) {
-                            R.string.edit
-                        } else {
-                            R.string.create
-                        }
-                ),
-                textAlign = TextAlign.Center,
-                style = MaterialTheme.typography.headlineSmall,
-                color = MaterialTheme.colorScheme.onPrimaryContainer
-            )
-            Icon(
-                modifier = Modifier
-                    .size(32.dp)
-                    .align(Alignment.CenterEnd)
-                    .clickable {
-                        isSaveFailed = true
-                        onSaveClick()
-                    },
-                painter = painterResource(R.drawable.ic_save),
-                contentDescription = "Save",
-                tint = MaterialTheme.colorScheme.onPrimaryContainer,
-            )
+    Scaffold(
+        modifier = Modifier.fillMaxSize(),
+        snackbarHost = {
+            SnackbarHost(hostState = snackBarHostState)
         }
+    ) { innerPadding ->
 
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .verticalScroll(rememberScrollState())
-                .padding(horizontal = 8.dp)
+                .background(MaterialTheme.colorScheme.background)
         ) {
-
-            InputSectionItem(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                sectionTitle = stringResource(R.string.name),
-                icon = painterResource(R.drawable.ic_fridge),
-                singleLine = true,
-                isError = isSaveFailed && item.name.isBlank(),
-                text = item.name,
-                hint = stringResource(R.string.nameHint),
-                onValueChanged = {
-                    onAction(EditItemActions.Name(name = it))
-                }
-            )
-
-            Spacer(modifier = Modifier.height(8.dp))
-            InputSectionItem(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                sectionTitle = stringResource(R.string.note),
-                icon = painterResource(R.drawable.ic_note),
-                singleLine = false,
-                maxLines = 5,
-                text = item.note,
-                hint = stringResource(R.string.noteHint),
-                onValueChanged = {
-                    onAction(EditItemActions.Note(note = it))
-                }
-            )
-
-            Spacer(modifier = Modifier.height(8.dp))
-            SectionItem(
+            Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .clickable {
-                        if (item.id == -1) {
-                            showTimePicker = true
+                    .background(MaterialTheme.colorScheme.primaryContainer)
+                    .padding(horizontal = 8.dp, vertical = 4.dp),
+                contentAlignment = Alignment.Center,
+            ) {
+                Icon(
+                    modifier = Modifier
+                        .size(32.dp)
+                        .align(Alignment.CenterStart)
+                        .clickable {
+                            onCancel()
+                        },
+                    painter = painterResource(R.drawable.ic_close),
+                    contentDescription = "Close",
+                    tint = MaterialTheme.colorScheme.onPrimaryContainer,
+                )
+                Text(
+                    modifier = Modifier
+                        .align(Alignment.Center),
+                    text = stringResource(
+                        id =
+                            if (isEditMode) {
+                                R.string.edit
+                            } else {
+                                R.string.create
+                            }
+                    ),
+                    textAlign = TextAlign.Center,
+                    style = MaterialTheme.typography.headlineSmall,
+                    color = MaterialTheme.colorScheme.onPrimaryContainer
+                )
+                Icon(
+                    modifier = Modifier
+                        .size(32.dp)
+                        .align(Alignment.CenterEnd)
+                        .clickable {
+                            isSaveFailed = true
+                            onSaveClick()
+                        },
+                    painter = painterResource(R.drawable.ic_save),
+                    contentDescription = "Save",
+                    tint = MaterialTheme.colorScheme.onPrimaryContainer,
+                )
+            }
+
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .verticalScroll(rememberScrollState())
+                    .padding(horizontal = 8.dp)
+            ) {
+
+                InputSectionItem(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    sectionTitle = stringResource(R.string.name),
+                    icon = painterResource(R.drawable.ic_fridge),
+                    singleLine = true,
+                    isError = isSaveFailed && item.name.isBlank(),
+                    text = item.name,
+                    hint = stringResource(R.string.nameHint),
+                    onValueChanged = {
+                        onAction(EditItemActions.Name(name = it))
+                    }
+                )
+
+                Spacer(modifier = Modifier.height(8.dp))
+                InputSectionItem(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    sectionTitle = stringResource(R.string.note),
+                    icon = painterResource(R.drawable.ic_note),
+                    singleLine = false,
+                    maxLines = 5,
+                    text = item.note,
+                    hint = stringResource(R.string.noteHint),
+                    onValueChanged = {
+                        onAction(EditItemActions.Note(note = it))
+                    }
+                )
+
+                Spacer(modifier = Modifier.height(8.dp))
+                SectionItem(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable {
+                            if (item.id == -1) {
+                                showTimePicker = true
+                            }
+                        },
+                    sectionTitle = stringResource(R.string.timeOfStorage),
+                    icon = painterResource(R.drawable.ic_time_stored),
+                    text = item.timeStored.getDayMonthYearHourMinutes()
+                )
+
+                Spacer(modifier = Modifier.height(8.dp))
+                SectionItem(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable {
+                            showExpiredDatePicker = true
+                        },
+                    isError = isSaveFailed && item.expiredDate == LocalDate.MAX,
+                    sectionTitle = stringResource(R.string.expiredDate),
+                    icon = painterResource(R.drawable.ic_expire_date),
+                    text = item.expiredDate.getDayMonthYear()
+                )
+
+                Spacer(modifier = Modifier.height(8.dp))
+                SectionItem(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable {
+                            showCategorySelectionDialog = true
+                        },
+                    sectionTitle = stringResource(R.string.category),
+                    icon = painterResource(R.drawable.ic_category),
+                    text = item.category.displayName,
+                    isError = isSaveFailed && item.category == Category.NONE,
+                )
+
+                Spacer(modifier = Modifier.height(8.dp))
+                TextCheckBox(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    text = stringResource(R.string.isProductOpened),
+                    checked = item.isOpen,
+                    onCheckedChange = {
+                        if (!item.isOpen) {
+                            onAction(EditItemActions.IsOpen(isOpen = it))
+                        } else {
+                            scope.launch {
+                                snackBarHostState.showSnackbar("Product is already opened")
+                            }
+                        }
+                    }
+                )
+
+                Spacer(modifier = Modifier.height(8.dp))
+            }
+        }
+
+        when {
+            showStoredDatePicker || showExpiredDatePicker -> {
+                MyDatePickerDialog(
+                    currentDate = if (showStoredDatePicker) {
+                        item.timeStored.atZone(ZoneId.systemDefault()).toLocalDate()
+                    } else {
+                        item.expiredDate
+                    },
+                    selectable = {
+                        if (showStoredDatePicker) {
+                            it <= LocalDate.now().plusDays(1).toMillis()
+                        } else {
+                            true
                         }
                     },
-                sectionTitle = stringResource(R.string.timeOfStorage),
-                icon = painterResource(R.drawable.ic_time_stored),
-                text = item.timeStored.getDayMonthYearHourMinutes()
-            )
-
-            Spacer(modifier = Modifier.height(8.dp))
-            SectionItem(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clickable {
-                        showExpiredDatePicker = true
+                    onDateSelected = {
+                        if (showStoredDatePicker) {
+                            val newTime = LocalDateTime.of(
+                                it,
+                                LocalTime.of(pickedTime.first, pickedTime.second)
+                            )
+                            val newZone = ZonedDateTime.of(newTime, ZoneId.systemDefault())
+                            onAction(EditItemActions.TimeStored(newZone.toInstant()))
+                        } else {
+                            onAction(EditItemActions.ExpiredDate(expiredDate = it))
+                        }
+                        dismissCorrectDatePicker()
                     },
-                isError = isSaveFailed && item.expiredDate == LocalDate.MAX,
-                sectionTitle = stringResource(R.string.expiredDate),
-                icon = painterResource(R.drawable.ic_expire_date),
-                text = item.expiredDate.getDayMonthYear()
-            )
-
-            Spacer(modifier = Modifier.height(8.dp))
-            InputSectionItem(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                sectionTitle = stringResource(R.string.category),
-                icon = painterResource(R.drawable.ic_category),
-                singleLine = true,
-                text = item.category,
-                isError = isSaveFailed && item.category.isBlank(),
-                hint = stringResource(R.string.categoryHint),
-                onValueChanged = {
-                    onAction(EditItemActions.Category(category = it))
-                }
-            )
-
-            Spacer(modifier = Modifier.height(8.dp))
-            TextCheckBox(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                text = stringResource(R.string.isProductOpened),
-                checked = item.isOpen,
-                onCheckedChange = {
-                    onAction(EditItemActions.IsOpen(isOpen = it))
-                }
-            )
-
-            Spacer(modifier = Modifier.height(8.dp))
-        }
-    }
-
-    when {
-        showStoredDatePicker || showExpiredDatePicker -> {
-            MyDatePickerDialog(
-                currentDate = if (showStoredDatePicker) {
-                    item.timeStored.atZone(ZoneId.systemDefault()).toLocalDate()
-                } else {
-                    item.expiredDate
-                },
-                selectable = {
-                    if (showStoredDatePicker) {
-                        it <= LocalDate.now().plusDays(1).toMillis()
-                    } else {
-                        true
+                    onDismiss = {
+                        dismissCorrectDatePicker()
                     }
-                },
-                onDateSelected = {
-                    if (showStoredDatePicker) {
-                        val newTime = LocalDateTime.of(
-                            it,
-                            LocalTime.of(pickedTime.first, pickedTime.second)
-                        )
-                        val newZone = ZonedDateTime.of(newTime, ZoneId.systemDefault())
-                        onAction(EditItemActions.TimeStored(newZone.toInstant()))
-                    } else {
-                        onAction(EditItemActions.ExpiredDate(expiredDate = it))
+                )
+            }
+
+            showTimePicker -> {
+                TimePickerDialog(
+                    currentTime = item.timeStored,
+                    onConfirm = {
+                        pickedTime = Pair(it.hour, it.minute)
+                        showTimePicker = false
+                        showStoredDatePicker = true
+                    },
+                    onDismiss = {
+                        showTimePicker = false
+                    },
+                )
+            }
+
+            showCategorySelectionDialog -> {
+                CategorySelectionDialog(
+                    currentCategory = item.category,
+                    onCategorySelected = {
+                        onAction(EditItemActions.Category(category = it))
+                        showCategorySelectionDialog = false
+                    },
+                    onDismiss = {
+                        showCategorySelectionDialog = false
                     }
-                    dismissCorrectDatePicker()
-                },
-                onDismiss = {
-                    dismissCorrectDatePicker()
-                }
-            )
+                )
+            }
         }
-
-        showTimePicker -> {
-            TimePickerDialog(
-                currentTime = item.timeStored,
-                onConfirm = {
-                    pickedTime = Pair(it.hour, it.minute)
-                    showTimePicker = false
-                    showStoredDatePicker = true
-                },
-                onDismiss = {
-                    showTimePicker = false
-                },
-            )
-        }
+        Box(
+            modifier = Modifier
+                .padding(bottom = innerPadding.calculateBottomPadding())
+        ) {}
     }
-
 }
 
 @Composable
@@ -403,7 +447,7 @@ private fun AddItemScreenPreview() {
         val item = FridgeItem(
             id = 1,
             name = "",
-            category = "Protein",
+            category = Category.FOOD,
             isOpen = false,
             note = "These eggs are sourced from free-range hens that are fed a 100% organic diet.",
             expiredDate = LocalDate.now().plusDays(5),

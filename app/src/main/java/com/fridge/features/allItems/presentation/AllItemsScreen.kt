@@ -55,6 +55,7 @@ import com.fridge.core.data.getDayMonthYearHourMinutes
 import com.fridge.core.data.isItemExpired
 import com.fridge.core.designComponents.FilterToggleCard
 import com.fridge.core.designComponents.SortDropDownMenu
+import com.fridge.core.domain.Category
 import com.fridge.core.domain.FridgeItem
 import com.fridge.features.allItems.presentation.components.ItemFridge
 import com.fridge.ui.theme.FridgeAppTheme
@@ -307,7 +308,7 @@ fun AllItemsScreen(
                                 .fillMaxWidth(),
                             name = name,
                             note = note,
-                            category = category,
+                            category = category.displayName,
                             timeStored = timeStored.getDayMonthYearHourMinutes(),
                             expiredDate = expiredDate.getDayMonthYear(),
                             isOpened = isOpen,
@@ -321,7 +322,7 @@ fun AllItemsScreen(
         FloatingActionButton(
             modifier = Modifier
                 .align(Alignment.BottomEnd)
-                .padding(16.dp),
+                .padding(bottom = 22.dp, end = 22.dp),
             containerColor = MaterialTheme.colorScheme.primary,
             contentColor = Color.White,
             onClick = onNewItemAction,
@@ -340,7 +341,7 @@ private fun AllItemsScreenPreview() {
                 FridgeItem(
                     id = 1,
                     name = "Eggs",
-                    category = "Protein",
+                    category = Category.FOOD,
                     isOpen = true,
                     note = "These eggs are sourced from free-range hens that are fed a 100% organic diet.",
                     expiredDate = LocalDate.now().plusDays(5),

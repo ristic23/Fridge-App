@@ -59,7 +59,8 @@ fun TextCheckBox(
             Checkbox(
                 modifier = checkModifier,
                 colors = checkboxColors,
-                checked = checked, onCheckedChange = { onCheckedChange(it) }
+                checked = checked,
+                onCheckedChange = { onCheckedChange(it) }
             )
         }
     }

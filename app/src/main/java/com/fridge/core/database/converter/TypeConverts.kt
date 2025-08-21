@@ -2,6 +2,7 @@ package com.fridge.core.database.converter
 
 import androidx.room.ProvidedTypeConverter
 import androidx.room.TypeConverter
+import com.fridge.core.domain.Category
 import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
@@ -25,4 +26,10 @@ class TypeConverts @Inject constructor() {
     @TypeConverter
     fun instantToEpoch(instant: Instant?): Long? =
         instant?.toEpochMilli()
+
+    @TypeConverter
+    fun fromCategory(category: Category): String = category.name
+
+    @TypeConverter
+    fun toCategory(name: String): Category = Category.valueOf(name)
 }

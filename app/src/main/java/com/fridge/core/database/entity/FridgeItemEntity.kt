@@ -2,6 +2,7 @@ package com.fridge.core.database.entity
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.fridge.core.domain.Category
 import java.time.Instant
 import java.time.LocalDate
 
@@ -16,5 +17,5 @@ data class FridgeItemEntity(
     val timeStored: Instant,
 
     val isOpen: Boolean,
-    val category: String
+    val category: Category
 )

@@ -10,5 +10,5 @@ data class FridgeItem(
     val expiredDate: LocalDate = LocalDate.MAX,
     val timeStored: Instant = Instant.now(),
     val isOpen: Boolean = false,
-    val category: String = ""
+    val category: Category = Category.NONE
 )

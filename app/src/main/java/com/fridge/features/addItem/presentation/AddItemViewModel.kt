@@ -3,6 +3,7 @@ package com.fridge.features.addItem.presentation
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.fridge.core.domain.Category
 import com.fridge.core.domain.FridgeItem
 import com.fridge.features.addItem.domain.AddItemRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -68,7 +69,7 @@ class AddItemViewModel @Inject constructor(
     private fun fridgeItemNotFiled(): Boolean {
         return editItem.value.let { item ->
             item.name.isBlank() ||
-                    item.category.isBlank() ||
+                    item.category == Category.NONE ||
                     item.expiredDate == LocalDate.MAX
         }
     }
