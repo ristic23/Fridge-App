@@ -1,6 +1,6 @@
 @file:OptIn(ExperimentalMaterial3Api::class)
 
-package com.fridge.core.designComponents
+package com.fridge.core.designComponents.dialog
 
 import java.time.LocalDate
 import androidx.compose.material3.Button

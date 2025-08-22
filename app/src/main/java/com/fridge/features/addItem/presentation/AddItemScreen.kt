@@ -52,14 +52,13 @@ import com.fridge.R
 import com.fridge.core.data.getDayMonthYear
 import com.fridge.core.data.getDayMonthYearHourMinutes
 import com.fridge.core.data.toMillis
-import com.fridge.core.designComponents.CategorySelectionDialog
-import com.fridge.core.designComponents.MyDatePickerDialog
+import com.fridge.core.designComponents.dialog.CategorySelectionDialog
+import com.fridge.core.designComponents.dialog.MyDatePickerDialog
 import com.fridge.core.designComponents.SectionItem
 import com.fridge.core.designComponents.TextCheckBox
-import com.fridge.core.designComponents.TimePickerDialog
+import com.fridge.core.designComponents.dialog.TimePickerDialog
 import com.fridge.core.domain.Category
 import com.fridge.core.domain.FridgeItem
-import com.fridge.navigation.NavigationRoot
 import com.fridge.ui.theme.FridgeAppTheme
 import kotlinx.coroutines.launch
 import java.time.Instant

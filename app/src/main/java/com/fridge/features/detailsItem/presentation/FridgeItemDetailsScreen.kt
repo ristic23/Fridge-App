@@ -34,8 +34,11 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.fridge.R
 import com.fridge.core.data.getDayMonthYear
 import com.fridge.core.data.getDayMonthYearHourMinutes
-import com.fridge.core.designComponents.BottomSheetWithTwoOptions
+import com.fridge.core.designComponents.dialog.DeleteDialog
 import com.fridge.core.designComponents.SectionItem
+import com.fridge.core.designComponents.states.EmptyState
+import com.fridge.core.designComponents.states.ErrorState
+import com.fridge.core.designComponents.states.LoadingState
 import com.fridge.core.domain.Category
 import com.fridge.core.domain.FridgeItem
 import com.fridge.features.detailsItem.presentation.FridgeItemScreenStates.Empty
@@ -140,15 +143,23 @@ fun FridgeItemDetailsScreen(
         }
 
         when (screenState) {
-            is Empty -> {
+            is Error -> ErrorState(
+                modifier = Modifier
+                    .fillMaxSize(),
+                title = stringResource(R.string.error),
+                message =stringResource(R.string.defaultErrorMsg)
+            )
 
-            }
-            is Error -> {
-
-            }
-            is Loading -> {
-
-            }
+            is Loading -> LoadingState(
+                modifier = Modifier
+                    .fillMaxSize(),
+                message = stringResource(R.string.loading)
+            )
+            is Empty -> EmptyState(
+                modifier = Modifier
+                    .fillMaxSize(),
+                message = stringResource(R.string.empty)
+            )
             is Success -> {
                 val item = screenState.item
                 Column(
@@ -230,7 +241,7 @@ fun FridgeItemDetailsScreen(
 
     when {
         showDeleteDialog -> {
-            BottomSheetWithTwoOptions(
+            DeleteDialog(
                 onConfirm = {
                     showDeleteDialog = false
                     onDeleteClick()

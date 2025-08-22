@@ -1,4 +1,4 @@
-package com.fridge.core.designComponents
+package com.fridge.core.designComponents.menu
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.material3.DropdownMenu

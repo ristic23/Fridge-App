@@ -28,4 +28,8 @@
     <string name="storedSort">Stored</string>
     <string name="asc">ASC</string>
     <string name="dsc">DSC</string>
+    <string name="defaultErrorMsg">Something went wrong, check internet connection, and try again</string>
+    <string name="error">Error</string>
+    <string name="loading">Loading..</string>
+    <string name="empty">Item is empty</string>
 </resources>

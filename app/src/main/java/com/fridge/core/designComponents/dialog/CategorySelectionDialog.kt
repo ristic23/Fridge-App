@@ -1,4 +1,4 @@
-package com.fridge.core.designComponents
+package com.fridge.core.designComponents.dialog
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column

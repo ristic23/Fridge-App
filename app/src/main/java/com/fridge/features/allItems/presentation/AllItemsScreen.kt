@@ -38,8 +38,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.rotate
-import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -54,7 +52,7 @@ import com.fridge.core.data.getDayMonthYear
 import com.fridge.core.data.getDayMonthYearHourMinutes
 import com.fridge.core.data.isItemExpired
 import com.fridge.core.designComponents.FilterToggleCard
-import com.fridge.core.designComponents.SortDropDownMenu
+import com.fridge.core.designComponents.menu.SortDropDownMenu
 import com.fridge.core.domain.Category
 import com.fridge.core.domain.FridgeItem
 import com.fridge.features.allItems.presentation.components.ItemFridge

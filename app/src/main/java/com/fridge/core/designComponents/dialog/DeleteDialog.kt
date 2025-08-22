@@ -1,4 +1,4 @@
-package com.fridge.core.designComponents
+package com.fridge.core.designComponents.dialog
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -15,7 +15,7 @@ import com.fridge.R
 import com.fridge.ui.theme.FridgeAppTheme
 
 @Composable
-fun BottomSheetWithTwoOptions(
+fun DeleteDialog(
     onConfirm: () -> Unit,
     onDismiss: () -> Unit,
 ) {
@@ -61,13 +61,13 @@ fun BottomSheetWithTwoOptions(
 
 @Preview
 @Composable
-fun BottomSheetWithTwoOptionsPreview() {
+fun DeleteDialogPreview() {
     FridgeAppTheme {
         Box(
             modifier = Modifier
                 .fillMaxSize()
         ) {
-            BottomSheetWithTwoOptions(
+            DeleteDialog(
                 onConfirm = {},
                 onDismiss = {}
             )
