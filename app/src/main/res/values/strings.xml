@@ -18,7 +18,7 @@
     <string name="isProductOpened">Check if product is open</string>
     <string name="dismiss">Dismiss</string>
     <string name="ok">OK</string>
-    <string name="areYouSure">Are you sure? This action is permenent.</string>
+    <string name="areYouSure">Are you sure? This action is permanent.</string>
     <string name="cancel">Cancel</string>
     <string name="delete">Delete</string>
     <string name="searchHint">Find product</string>
@@ -30,6 +30,6 @@
     <string name="dsc">DSC</string>
     <string name="defaultErrorMsg">Something went wrong, check internet connection, and try again</string>
     <string name="error">Error</string>
-    <string name="loading">Loading..</string>
+    <string name="loading">Loading…</string>
     <string name="empty">Item is empty</string>
 </resources>

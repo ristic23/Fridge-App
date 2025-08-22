@@ -32,8 +32,8 @@ class FridgeItemDetailsViewModel @Inject constructor(
                 _screenState.value = result?.let { Success(it) } ?: Empty
             } catch (e: CancellationException) {
                 throw e
-            } catch (e: Exception) {
-                _screenState.value = Error(e.message ?: "Unknown error")
+            } catch (_: Exception) {
+                _screenState.value = Error
             }
         }
     }

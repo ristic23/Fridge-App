@@ -80,7 +80,7 @@ internal class FridgeItemDetailsViewModelTest {
     @Test
     fun `fetchFridgeItem emits Error`() = runTest {
         val exception = RuntimeException("Error occurred")
-        coEvery { detailItemRepository.getItemById(item.id) } throws RuntimeException("Error occurred")
+        coEvery { detailItemRepository.getItemById(item.id) } throws exception
 
         viewModel.screenState.test {
             val initState = awaitItem()
@@ -91,7 +91,6 @@ internal class FridgeItemDetailsViewModelTest {
 
             val errorState = awaitItem()
             assertEquals(errorState is Error, true)
-            assertEquals((errorState as Error).error, exception.message)
         }
     }
 

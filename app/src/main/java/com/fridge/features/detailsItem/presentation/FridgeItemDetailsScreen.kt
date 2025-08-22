@@ -24,6 +24,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -117,29 +118,33 @@ fun FridgeItemDetailsScreen(
                 style = MaterialTheme.typography.headlineSmall,
                 color = MaterialTheme.colorScheme.onPrimaryContainer
             )
-            Icon(
-                modifier = Modifier
-                    .size(32.dp)
-                    .align(Alignment.CenterEnd)
-                    .offset(x = -(40.dp))
-                    .clickable {
-                        onEditClick()
-                    },
-                painter = painterResource(R.drawable.ic_edit),
-                contentDescription = "Edit",
-                tint = MaterialTheme.colorScheme.onPrimaryContainer,
-            )
-            Icon(
-                modifier = Modifier
-                    .size(32.dp)
-                    .align(Alignment.CenterEnd)
-                    .clickable {
-                        showDeleteDialog = true
-                    },
-                painter = painterResource(R.drawable.ic_delete_forever),
-                contentDescription = "Delete",
-                tint = MaterialTheme.colorScheme.onPrimaryContainer,
-            )
+            if (screenState is Success) {
+                Icon(
+                    modifier = Modifier
+                        .size(32.dp)
+                        .align(Alignment.CenterEnd)
+                        .offset(x = -(40.dp))
+                        .testTag("Edit icon")
+                        .clickable {
+                            onEditClick()
+                        },
+                    painter = painterResource(R.drawable.ic_edit),
+                    contentDescription = "Edit",
+                    tint = MaterialTheme.colorScheme.onPrimaryContainer,
+                )
+                Icon(
+                    modifier = Modifier
+                        .size(32.dp)
+                        .align(Alignment.CenterEnd)
+                        .testTag("Delete icon")
+                        .clickable {
+                            showDeleteDialog = true
+                        },
+                    painter = painterResource(R.drawable.ic_delete_forever),
+                    contentDescription = "Delete",
+                    tint = MaterialTheme.colorScheme.onPrimaryContainer,
+                )
+            }
         }
 
         when (screenState) {
@@ -181,7 +186,8 @@ fun FridgeItemDetailsScreen(
                         Spacer(modifier = Modifier.height(8.dp))
                         SectionItem(
                             modifier = Modifier
-                                .fillMaxWidth(),
+                                .fillMaxWidth()
+                                .testTag("Note"),
                             sectionTitle = stringResource(R.string.note),
                             icon = painterResource(R.drawable.ic_note),
                             text = it
@@ -208,7 +214,14 @@ fun FridgeItemDetailsScreen(
                     Spacer(modifier = Modifier.height(8.dp))
                     SectionItem(
                         modifier = Modifier
-                            .fillMaxWidth(),
+                            .fillMaxWidth()
+                            .testTag(
+                                if (item.isOpen) {
+                                    "Open icon"
+                                } else {
+                                    "Closed icon"
+                                }
+                            ),
                         sectionTitle = stringResource(R.string.packageState),
                         icon = painterResource(
                             if (item.isOpen) {
@@ -256,7 +269,7 @@ fun FridgeItemDetailsScreen(
 
 @Preview
 @Composable
-private fun FridgeItemDetailsScreenPreview() {
+private fun FridgeItemDetailsScreenSuccessPreview() {
     FridgeAppTheme {
         FridgeItemDetailsScreen(
             screenState = Success(
@@ -276,3 +289,43 @@ private fun FridgeItemDetailsScreenPreview() {
         )
     }
 }
+
+@Preview
+@Composable
+private fun FridgeItemDetailsScreenLoadingPreview() {
+    FridgeAppTheme {
+        FridgeItemDetailsScreen(
+            screenState = Loading,
+            onBack = {},
+            onEditClick = {},
+            onDeleteClick = {},
+        )
+    }
+}
+
+@Preview
+@Composable
+private fun FridgeItemDetailsScreenErrorPreview() {
+    FridgeAppTheme {
+        FridgeItemDetailsScreen(
+            screenState = Error,
+            onBack = {},
+            onEditClick = {},
+            onDeleteClick = {},
+        )
+    }
+}
+
+@Preview
+@Composable
+private fun FridgeItemDetailsScreenEmptyPreview() {
+    FridgeAppTheme {
+        FridgeItemDetailsScreen(
+            screenState = Empty,
+            onBack = {},
+            onEditClick = {},
+            onDeleteClick = {},
+        )
+    }
+}
+
