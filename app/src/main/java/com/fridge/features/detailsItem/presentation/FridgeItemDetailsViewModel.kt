@@ -1,16 +1,14 @@
 package com.fridge.features.detailsItem.presentation
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.fridge.features.detailsItem.domain.DetailItemRepository
-import com.fridge.features.detailsItem.presentation.FridgeItemScreenStates.Loading
-import com.fridge.features.detailsItem.presentation.FridgeItemScreenStates.Error
 import com.fridge.features.detailsItem.presentation.FridgeItemScreenStates.Empty
+import com.fridge.features.detailsItem.presentation.FridgeItemScreenStates.Error
+import com.fridge.features.detailsItem.presentation.FridgeItemScreenStates.Loading
 import com.fridge.features.detailsItem.presentation.FridgeItemScreenStates.Success
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -35,7 +33,6 @@ class FridgeItemDetailsViewModel @Inject constructor(
             } catch (e: CancellationException) {
                 throw e
             } catch (e: Exception) {
-                Log.e("DetailItemVM", "Failed to fetch item", e)
                 _screenState.value = Error(e.message ?: "Unknown error")
             }
         }
@@ -47,8 +44,8 @@ class FridgeItemDetailsViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             if (screenState.value is Success) {
                 detailItemRepository.deleteItem(item = (screenState.value as Success).item)
+                deletingFinished()
             }
-            deletingFinished()
         }
     }
 
